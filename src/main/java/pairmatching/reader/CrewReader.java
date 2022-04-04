@@ -2,54 +2,37 @@ package pairmatching.reader;
 
 import pairmatching.constant.Course;
 
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CrewReader {
-    private final static CrewReader crewReader = new CrewReader();
-
-    private final Map<Course, List<String>> crewData = new HashMap<>();
+    private final static FileReader fileReader = new FileReader();
+    private final static CrewReader instance = new CrewReader();
 
     private final static String FRONTEND_FILE = "/frontend-crew.md";
     private final static String BACKEND_FILE = "/backend-crew.md";
 
+    private final Map<Course, List<String>> cached = new HashMap<>();
+
     private CrewReader() {
-        crewData.put(Course.BACKEND, getBackEndCrewList());
-        crewData.put(Course.FRONTEND, getFrontEndCrewList());
+        cached.put(Course.BACKEND, getBackEndCrewList());
+        cached.put(Course.FRONTEND, getFrontEndCrewList());
     }
 
     public static CrewReader getInstance() {
-        return crewReader;
+        return instance;
     }
 
     public List<String> getCrewList(Course course) {
-        return crewData.get(course);
+        return cached.get(course);
     }
 
     private List<String> getFrontEndCrewList() {
-        return readCrew(FRONTEND_FILE);
+        return fileReader.getLines(FRONTEND_FILE);
     }
 
     private List<String> getBackEndCrewList() {
-        return readCrew(BACKEND_FILE);
-    }
-
-    private List<String> readCrew(String fileName) {
-        try {
-            URL resource = getClass().getResource(fileName);
-
-            if (resource != null) {
-                return Files.readAllLines(Paths.get(resource.getFile().substring(1)));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+        return fileReader.getLines(BACKEND_FILE);
     }
 }

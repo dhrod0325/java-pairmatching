@@ -4,11 +4,11 @@ import camp.nextstep.edu.missionutils.Randoms;
 import pairmatching.ApplicationContext;
 import pairmatching.exception.PairException;
 import pairmatching.model.Crew;
+import pairmatching.model.Input;
 import pairmatching.model.Pair;
 import pairmatching.reader.CrewReader;
 import pairmatching.repository.PairRepository;
 import pairmatching.runner.Runner;
-import pairmatching.model.Input;
 import pairmatching.view.InputView;
 import pairmatching.view.OutputView;
 
@@ -19,7 +19,7 @@ public class MatchingRunner implements Runner {
     private static final int MAX_APPLY_COUNT = 3;
     private static final String ERROR_MATCHING_OVER_COUNT = String.format("재매칭 횟수 %d 초과로 실패", MAX_APPLY_COUNT);
 
-    private final PairRepository pairRepository = ApplicationContext.getRepository();
+    private final PairRepository repo = ApplicationContext.getRepository();
     private Input input;
 
     @Override
@@ -62,7 +62,7 @@ public class MatchingRunner implements Runner {
     }
 
     private void matchSuccess(List<Pair> pairList) {
-        pairRepository.addPairList(input.getCourseLevel(), pairList);
+        repo.addPairList(input.getCourseLevel(), pairList);
         OutputView.printPairResult(pairList);
     }
 
@@ -80,12 +80,8 @@ public class MatchingRunner implements Runner {
         return pair;
     }
 
-    private List<Pair> getPairList() {
-        return pairRepository.findList(input.getCourseLevel());
-    }
-
     private boolean isAlreadyPair() {
-        return !getPairList().isEmpty();
+        return !repo.findList(input.getCourseLevel()).isEmpty();
     }
 
     private List<String> getShuffledCrewList() {
@@ -94,7 +90,7 @@ public class MatchingRunner implements Runner {
 
     private boolean isRequireRematchingPair(Pair pair) {
         for (Crew crew : pair.getCrewList()) {
-            Pair existPair = pairRepository.findPairByCrew(input.getCourseLevel(), crew);
+            Pair existPair = repo.findPairByCrew(input.getCourseLevel(), crew);
             return (existPair != null && !existPair.isMatchAble(crew, pair));
         }
 
