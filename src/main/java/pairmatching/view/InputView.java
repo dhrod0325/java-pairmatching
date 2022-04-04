@@ -19,7 +19,7 @@ public class InputView {
         return Console.readLine();
     }
 
-    public static String inputPairInfo() {
+    public static String inputMatching() {
         StringBuilder sb = new StringBuilder();
         sb.append("#########################################\n");
         sb.append("과정 : ").append(getCourses()).append("\n");

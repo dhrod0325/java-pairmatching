@@ -1,4 +1,4 @@
-package pairmatching.model;
+package pairmatching.input;
 
 import pairmatching.constant.Course;
 import pairmatching.constant.CourseLevel;
@@ -26,12 +26,6 @@ public class Input {
         return courseLevel;
     }
 
-    public static Input fromText(String text) {
-        Input pairInfo = new Input();
-        pairInfo.parse(text);
-        return pairInfo;
-    }
-
     private void parseCourse(String course) {
         this.course = Course.fromString(course);
         validate(this.course, Course.list(), ERROR_COURSE);
@@ -51,7 +45,7 @@ public class Input {
         if (!list.contains(check)) throw new PairException(message);
     }
 
-    private void parse(String text) {
+    public void parse(String text) {
         String[] texts = text.split(",");
 
         parseCourse(texts[0].trim());

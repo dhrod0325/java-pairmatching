@@ -2,7 +2,7 @@ package pairmatching.runner.impl;
 
 import pairmatching.ApplicationContext;
 import pairmatching.exception.PairException;
-import pairmatching.model.Input;
+import pairmatching.input.Input;
 import pairmatching.model.Pair;
 import pairmatching.repository.PairRepository;
 import pairmatching.runner.Runner;
@@ -16,12 +16,13 @@ public class LookupRunner implements Runner {
 
     private final PairRepository pairRepository = ApplicationContext.getRepository();
 
+    private final Input input = new Input();
+
     @Override
     public void run() {
-        String pairInput = InputView.inputPairInfo();
-        Input pairInfo = Input.fromText(pairInput);
+        input.parse(InputView.inputMatching());
 
-        List<Pair> pairList = pairRepository.findList(pairInfo.getCourseLevel());
+        List<Pair> pairList = pairRepository.findList(input.getCourseLevel());
 
         validate(pairList);
 
