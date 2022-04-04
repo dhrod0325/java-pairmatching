@@ -1,9 +1,15 @@
 package pairmatching.constant;
 
+import pairmatching.exception.PairException;
+
 import java.util.*;
 
 public class Mission {
     private static final Map<Level, List<String>> data = new HashMap<>();
+
+    private Mission() {
+        throw new PairException("객체를 생성할 수 없습니다");
+    }
 
     static {
         data.put(Level.LEVEL1, Arrays.asList("자동차경주", "로또", "숫자야구게임"));
@@ -13,8 +19,7 @@ public class Mission {
         data.put(Level.LEVEL5, Collections.emptyList());
     }
 
-    public static List<String> getMissionsByLevel(Level level) {
+    public static List<String> getNamesByLevel(Level level) {
         return Collections.unmodifiableList(data.get(level));
     }
-
 }

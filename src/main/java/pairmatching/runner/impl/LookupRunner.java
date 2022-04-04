@@ -2,10 +2,10 @@ package pairmatching.runner.impl;
 
 import pairmatching.ApplicationContext;
 import pairmatching.exception.PairException;
+import pairmatching.model.Input;
 import pairmatching.model.Pair;
 import pairmatching.repository.PairRepository;
 import pairmatching.runner.Runner;
-import pairmatching.model.Input;
 import pairmatching.view.InputView;
 import pairmatching.view.OutputView;
 
@@ -23,10 +23,12 @@ public class LookupRunner implements Runner {
 
         List<Pair> pairList = pairRepository.findList(pairInfo.getCourseLevel());
 
-        if (pairList.isEmpty()) {
-            throw new PairException(ERROR_NOT_FOUND_MATCHING);
-        }
+        validate(pairList);
 
         OutputView.printPairResult(pairList);
+    }
+
+    private void validate(List<Pair> pairList) {
+        if (pairList.isEmpty()) throw new PairException(ERROR_NOT_FOUND_MATCHING);
     }
 }

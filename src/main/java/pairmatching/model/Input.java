@@ -18,6 +18,20 @@ public class Input {
     private String mission;
     private CourseLevel courseLevel;
 
+    public Course getCourse() {
+        return course;
+    }
+
+    public CourseLevel getCourseLevel() {
+        return courseLevel;
+    }
+
+    public static Input fromText(String text) {
+        Input pairInfo = new Input();
+        pairInfo.parse(text);
+        return pairInfo;
+    }
+
     private void parseCourse(String course) {
         this.course = Course.fromString(course);
         validate(this.course, Course.list(), ERROR_COURSE);
@@ -30,14 +44,14 @@ public class Input {
 
     private void parseMission(String mission) {
         this.mission = mission;
-        validate(this.mission, Mission.getMissionsByLevel(level), ERROR_MISSION);
+        validate(this.mission, Mission.getNamesByLevel(level), ERROR_MISSION);
     }
 
     private <T> void validate(T check, List<T> list, String message) {
         if (!list.contains(check)) throw new PairException(message);
     }
 
-    public void parse(String text) {
+    private void parse(String text) {
         String[] texts = text.split(",");
 
         parseCourse(texts[0].trim());
@@ -45,19 +59,5 @@ public class Input {
         parseMission(texts[2].trim());
 
         this.courseLevel = new CourseLevel(course, level, mission);
-    }
-
-    public static Input fromText(String text) {
-        Input pairInfo = new Input();
-        pairInfo.parse(text);
-        return pairInfo;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public CourseLevel getCourseLevel() {
-        return courseLevel;
     }
 }

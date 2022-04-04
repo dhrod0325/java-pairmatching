@@ -27,7 +27,7 @@ public class InputView {
 
         Level.list().forEach(level -> {
             sb.append("- ").append(level.getName()).append(" : ");
-            sb.append(String.join(" | ", Mission.getMissionsByLevel(level))).append("\n");
+            sb.append(String.join(" | ", Mission.getNamesByLevel(level))).append("\n");
         });
 
         sb.append("#########################################\n");
