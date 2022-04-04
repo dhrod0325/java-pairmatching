@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatchingRunner implements Runner {
+    private static final int MAX_APPLY_COUNT = 3;
+
     private final PairRepository pairRepository = ApplicationContext.getRepository();
     private Input input;
 
@@ -31,7 +33,7 @@ public class MatchingRunner implements Runner {
             }
         }
 
-        matching(3);
+        matching(MAX_APPLY_COUNT);
     }
 
     private boolean matching(int maxApplyCount) {
@@ -64,7 +66,7 @@ public class MatchingRunner implements Runner {
     }
 
     private boolean matchFail() {
-        throw new IllegalArgumentException("[ERROR] 재매칭 횟수 초과로 실패");
+        throw new IllegalArgumentException(String.format("[ERROR] 재매칭 횟수 %d 초과로 실패", MAX_APPLY_COUNT));
     }
 
     private Pair createPair(List<String> crewList, int index) {

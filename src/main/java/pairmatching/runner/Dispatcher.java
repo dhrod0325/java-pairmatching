@@ -25,6 +25,10 @@ public class Dispatcher {
             if (menu.equalsIgnoreCase("q")) return;
 
             try {
+                if (!runnerMap.containsKey(menu)) {
+                    throw new IllegalArgumentException("[ERROR] 1,2,3,Q 중에 하나를 입력하세요");
+                }
+
                 Runner runner = runnerMap.get(menu);
                 runner.run();
             } catch (Exception e) {
