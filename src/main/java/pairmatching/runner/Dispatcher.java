@@ -4,6 +4,7 @@ import pairmatching.runner.impl.InitRunner;
 import pairmatching.runner.impl.LookupRunner;
 import pairmatching.runner.impl.MatchingRunner;
 import pairmatching.view.InputView;
+import pairmatching.view.OutputView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class Dispatcher {
                 Runner runner = runnerMap.get(menu);
                 runner.run();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                OutputView.out(e.getMessage());
             }
         }
     }
