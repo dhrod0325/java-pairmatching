@@ -22,7 +22,7 @@ public class LookupRunner implements Runner {
     public void run() {
         input.parse(InputView.inputMatching());
 
-        List<Pair> pairList = pairRepository.findList(input.getCourseLevel());
+        List<Pair> pairList = pairRepository.findPairList(input.getCourseLevel());
 
         validate(pairList);
 

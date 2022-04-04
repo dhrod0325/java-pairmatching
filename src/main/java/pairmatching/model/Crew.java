@@ -25,4 +25,11 @@ public class Crew {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    @Override
+    public String toString() {
+        return "Crew{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

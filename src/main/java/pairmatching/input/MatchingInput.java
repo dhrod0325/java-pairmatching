@@ -12,7 +12,7 @@ public class MatchingInput extends Input {
     }
 
     private boolean isAlreadyMatching() {
-        return !repo.findList(getCourseLevel()).isEmpty();
+        return !repo.findPairList(getCourseLevel()).isEmpty();
     }
 
     private boolean isSkipMatching() {

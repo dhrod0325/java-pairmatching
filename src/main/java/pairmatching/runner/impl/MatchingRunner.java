@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatchingRunner implements Runner {
-    private static final int MAX_APPLY_COUNT = 3;
-    private static final String ERROR_MATCHING_OVER_COUNT = String.format("재매칭 횟수 %d 초과로 실패", MAX_APPLY_COUNT);
+    private static final int MAX_MATCHING_APPLY_COUNT = 3;
+    private static final String ERROR_MATCHING_OVER_COUNT = String.format("재매칭 횟수 %d 초과로 실패", MAX_MATCHING_APPLY_COUNT);
 
     private final PairRepository repo = ApplicationContext.getRepository();
     private final MatchingInput input = new MatchingInput();
@@ -29,11 +29,23 @@ public class MatchingRunner implements Runner {
         if (input.isAlreadyMatchingAndSkip())
             return;
 
-        matching(MAX_APPLY_COUNT);
+        List<Pair> pairList = getMatchingPairList();
+
+        savePairResult(pairList);
+
+        OutputView.printPairResult(pairList);
     }
 
-    private void matching(int maxApplyCount) {
-        validateMaxApplyCount(maxApplyCount);
+    private void savePairResult(List<Pair> pairList) {
+        repo.addPairList(input.getCourseLevel(), pairList);
+    }
+
+    private List<Pair> getMatchingPairList() {
+        return getMatchingPairList(0);
+    }
+
+    private List<Pair> getMatchingPairList(int applyCount) {
+        validateMaxApplyCount(applyCount);
 
         List<Pair> pairList = new ArrayList<>();
         List<String> shuffledCrewList = getShuffledCrewList();
@@ -43,24 +55,18 @@ public class MatchingRunner implements Runner {
 
             Pair pair = createPair(shuffledCrewList, i);
 
-            if (isRequireRematchingPair(pair)) {
-                matching(--maxApplyCount);
-                return;
+            if (isRequireRematching(pair)) {
+                return getMatchingPairList(++applyCount);
             }
 
             pairList.add(pair);
         }
 
-        matchingSuccess(pairList);
+        return pairList;
     }
 
-    private void validateMaxApplyCount(int maxApplyCount) {
-        if (maxApplyCount <= 0) throw new PairException(ERROR_MATCHING_OVER_COUNT);
-    }
-
-    private void matchingSuccess(List<Pair> pairList) {
-        repo.addPairList(input.getCourseLevel(), pairList);
-        OutputView.printPairResult(pairList);
+    private void validateMaxApplyCount(int applyCount) {
+        if (applyCount >= MAX_MATCHING_APPLY_COUNT) throw new PairException(ERROR_MATCHING_OVER_COUNT);
     }
 
     private Pair createPair(List<String> crewList, int index) {
@@ -81,10 +87,13 @@ public class MatchingRunner implements Runner {
         return Randoms.shuffle(CrewReader.getInstance().getCrewList(input.getCourse()));
     }
 
-    private boolean isRequireRematchingPair(Pair pair) {
-        for (Crew crew : pair.getCrewList()) {
-            Pair existPair = repo.findPairByCrew(input.getCourseLevel(), crew);
-            return (existPair != null && !existPair.isMatchAble(crew, pair));
+    private boolean isRequireRematching(Pair pair) {
+        List<Pair> list = repo.findPairList(input.getCourseLevel());
+
+        for (Pair existPair : list) {
+            if (!existPair.isMatchAble(pair)) {
+                return true;
+            }
         }
 
         return false;
