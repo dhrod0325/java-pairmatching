@@ -1,4 +1,4 @@
-package pairmatching.view;
+package pairmatching.model;
 
 import pairmatching.constant.Course;
 import pairmatching.constant.CourseLevel;

@@ -8,7 +8,7 @@ import pairmatching.model.Pair;
 import pairmatching.reader.CrewReader;
 import pairmatching.repository.PairRepository;
 import pairmatching.runner.Runner;
-import pairmatching.view.Input;
+import pairmatching.model.Input;
 import pairmatching.view.InputView;
 import pairmatching.view.OutputView;
 
@@ -38,33 +38,32 @@ public class MatchingRunner implements Runner {
         matching(MAX_APPLY_COUNT);
     }
 
-    private boolean matching(int maxApplyCount) {
+    private void matching(int maxApplyCount) {
         if (maxApplyCount <= 0)
             throw new PairException(ERROR_MATCHING_OVER_COUNT);
 
         List<String> shuffledCrewList = getShuffledCrewList();
         List<Pair> pairList = new ArrayList<>();
 
-        int listSize = shuffledCrewList.size();
-
-        for (int i = 0; i < listSize; i += 2) {
-            if (i + 2 > listSize) break;
+        for (int i = 0; i < shuffledCrewList.size(); i += 2) {
+            if (i + 2 > shuffledCrewList.size()) break;
 
             Pair pair = createPair(shuffledCrewList, i);
 
-            if (isRequireRematchingPair(pair))
-                return matching(--maxApplyCount);
+            if (isRequireRematchingPair(pair)) {
+                matching(--maxApplyCount);
+                return;
+            }
 
             pairList.add(pair);
         }
 
-        return matchSuccess(pairList);
+        matchSuccess(pairList);
     }
 
-    private boolean matchSuccess(List<Pair> pairList) {
+    private void matchSuccess(List<Pair> pairList) {
         pairRepository.addPairList(input.getCourseLevel(), pairList);
         OutputView.printPairResult(pairList);
-        return true;
     }
 
     private Pair createPair(List<String> crewList, int index) {
@@ -90,8 +89,7 @@ public class MatchingRunner implements Runner {
     }
 
     private List<String> getShuffledCrewList() {
-        List<String> readCrewList = CrewReader.getInstance().getCrewList(input.getCourse());
-        return Randoms.shuffle(readCrewList);
+        return Randoms.shuffle(CrewReader.getInstance().getCrewList(input.getCourse()));
     }
 
     private boolean isRequireRematchingPair(Pair pair) {

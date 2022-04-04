@@ -5,7 +5,7 @@ import pairmatching.exception.PairException;
 import pairmatching.model.Pair;
 import pairmatching.repository.PairRepository;
 import pairmatching.runner.Runner;
-import pairmatching.view.Input;
+import pairmatching.model.Input;
 import pairmatching.view.InputView;
 import pairmatching.view.OutputView;
 
