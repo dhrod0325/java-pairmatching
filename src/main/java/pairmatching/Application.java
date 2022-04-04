@@ -1,6 +1,6 @@
 package pairmatching;
 
-import pairmatching.runner.Dispatcher;
+import pairmatching.dispatcher.Dispatcher;
 
 public class Application {
     public static void main(String[] args) {

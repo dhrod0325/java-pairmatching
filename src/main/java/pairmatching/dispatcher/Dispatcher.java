@@ -1,26 +1,16 @@
-package pairmatching.runner;
+package pairmatching.dispatcher;
 
 import pairmatching.constant.Menu;
 import pairmatching.exception.PairException;
-import pairmatching.runner.impl.InitRunner;
-import pairmatching.runner.impl.LookupRunner;
-import pairmatching.runner.impl.MatchingRunner;
+import pairmatching.runner.Runner;
+import pairmatching.runner.RunnerRegistry;
 import pairmatching.view.InputView;
 import pairmatching.view.OutputView;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Dispatcher {
     private static final String ERROR_NOT_EXIST_MENU = "1,2,3,Q 중에 하나를 입력하세요";
 
-    private final Map<Menu, Runner> runnerMap = new HashMap<>();
-
-    public Dispatcher() {
-        runnerMap.put(Menu.MATCHING, new MatchingRunner());
-        runnerMap.put(Menu.LOOKUP, new LookupRunner());
-        runnerMap.put(Menu.INIT, new InitRunner());
-    }
+    private final RunnerRegistry runnerRegistry = new RunnerRegistry();
 
     public void run() {
         while (true) {
@@ -31,9 +21,10 @@ public class Dispatcher {
 
                 validateMenu(inputMenu);
 
-                if (isQuit(inputMenu)) return;
+                if (isQuit(inputMenu))
+                    return;
 
-                Runner runner = runnerMap.get(menu);
+                Runner runner = runnerRegistry.getRunner(menu);
                 runner.run();
             } catch (Exception e) {
                 OutputView.out(e.getMessage());
