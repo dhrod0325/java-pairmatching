@@ -2,6 +2,7 @@ package pairmatching.runner.impl;
 
 import camp.nextstep.edu.missionutils.Randoms;
 import pairmatching.ApplicationContext;
+import pairmatching.exception.PairException;
 import pairmatching.model.Crew;
 import pairmatching.model.Pair;
 import pairmatching.reader.CrewReader;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class MatchingRunner implements Runner {
     private static final int MAX_APPLY_COUNT = 3;
+    private static final String ERROR_MATCHING_OVER_COUNT = String.format("재매칭 횟수 %d 초과로 실패", MAX_APPLY_COUNT);
 
     private final PairRepository pairRepository = ApplicationContext.getRepository();
     private Input input;
@@ -38,7 +40,7 @@ public class MatchingRunner implements Runner {
 
     private boolean matching(int maxApplyCount) {
         if (maxApplyCount <= 0)
-            return matchFail();
+            throw new PairException(ERROR_MATCHING_OVER_COUNT);
 
         List<String> shuffledCrewList = getShuffledCrewList();
         List<Pair> pairList = new ArrayList<>();
@@ -63,10 +65,6 @@ public class MatchingRunner implements Runner {
         pairRepository.addPairList(input.getCourseLevel(), pairList);
         OutputView.printPairResult(pairList);
         return true;
-    }
-
-    private boolean matchFail() {
-        throw new IllegalArgumentException(String.format("[ERROR] 재매칭 횟수 %d 초과로 실패", MAX_APPLY_COUNT));
     }
 
     private Pair createPair(List<String> crewList, int index) {

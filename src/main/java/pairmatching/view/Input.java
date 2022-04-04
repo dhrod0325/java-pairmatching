@@ -4,10 +4,15 @@ import pairmatching.constant.Course;
 import pairmatching.constant.CourseLevel;
 import pairmatching.constant.Level;
 import pairmatching.constant.Mission;
+import pairmatching.exception.PairException;
 
 import java.util.List;
 
 public class Input {
+    private static final String ERROR_COURSE = "없는 코스입니다";
+    private static final String ERROR_LEVEL = "없는 레벨입니다";
+    private static final String ERROR_MISSION = "없는 미션입니다";
+
     private Course course;
     private Level level;
     private String mission;
@@ -15,20 +20,21 @@ public class Input {
 
     private void parseCourse(String course) {
         this.course = Course.fromString(course);
+        validate(this.course, Course.list(), ERROR_COURSE);
     }
 
     private void parseLevel(String level) {
         this.level = Level.fromString(level);
+        validate(this.level, Level.list(), ERROR_LEVEL);
     }
 
     private void parseMission(String mission) {
-        List<String> missions = Mission.getMissionsByLevel(level);
-
-        if (!missions.contains(mission)) {
-            throw new IllegalArgumentException("[ERROR] 없는 미션입니다");
-        }
-
         this.mission = mission;
+        validate(this.mission, Mission.getMissionsByLevel(level), ERROR_MISSION);
+    }
+
+    private <T> void validate(T check, List<T> list, String message) {
+        if (!list.contains(check)) throw new PairException(message);
     }
 
     public void parse(String text) {

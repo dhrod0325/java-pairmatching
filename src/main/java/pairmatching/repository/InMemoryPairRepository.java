@@ -13,10 +13,6 @@ import java.util.stream.Collectors;
 public class InMemoryPairRepository implements PairRepository {
     private final Map<CourseLevel, List<Pair>> pairData = new HashMap<>();
 
-    public void removePair(CourseLevel courseLevel) {
-        pairData.remove(courseLevel);
-    }
-
     @Override
     public void addPairList(CourseLevel courseLevel, List<Pair> pair) {
         pair.forEach(item -> addPair(courseLevel, item));
@@ -27,11 +23,6 @@ public class InMemoryPairRepository implements PairRepository {
         List<Pair> pairList = findList(courseLevel);
         pairList.add(pair);
         pairData.put(courseLevel, pairList);
-    }
-
-    @Override
-    public void addAll(Map<CourseLevel, List<Pair>> data) {
-        pairData.putAll(data);
     }
 
     @Override
