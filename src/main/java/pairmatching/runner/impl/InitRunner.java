@@ -11,7 +11,6 @@ public class InitRunner implements Runner {
     @Override
     public void run() {
         repository.clear();
-
         OutputView.out("초기화 되었습니다.");
     }
 }

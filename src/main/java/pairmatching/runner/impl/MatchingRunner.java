@@ -64,8 +64,7 @@ public class MatchingRunner implements Runner {
     }
 
     private boolean matchFail() {
-        System.out.println("재매칭 횟수 초과로 실패");
-        return false;
+        throw new IllegalArgumentException("[ERROR] 재매칭 횟수 초과로 실패");
     }
 
     private Pair createPair(List<String> crewList, int index) {
