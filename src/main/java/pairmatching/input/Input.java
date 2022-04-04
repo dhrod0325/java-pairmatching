@@ -26,6 +26,16 @@ public class Input {
         return courseLevel;
     }
 
+    public void parse(String text) {
+        String[] texts = text.split(",");
+
+        parseCourse(texts[0].trim());
+        parseLevel(texts[1].trim());
+        parseMission(texts[2].trim());
+
+        this.courseLevel = new CourseLevel(course, level, mission);
+    }
+
     private void parseCourse(String course) {
         this.course = Course.fromString(course);
         validate(this.course, Course.list(), ERROR_COURSE);
@@ -43,15 +53,5 @@ public class Input {
 
     private <T> void validate(T check, List<T> list, String message) {
         if (!list.contains(check)) throw new PairException(message);
-    }
-
-    public void parse(String text) {
-        String[] texts = text.split(",");
-
-        parseCourse(texts[0].trim());
-        parseLevel(texts[1].trim());
-        parseMission(texts[2].trim());
-
-        this.courseLevel = new CourseLevel(course, level, mission);
     }
 }
