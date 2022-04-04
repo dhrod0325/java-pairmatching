@@ -27,4 +27,15 @@ public class Pair {
                 .map(Crew::getName)
                 .collect(Collectors.joining(" : "));
     }
+
+    public boolean isMatchAble(Crew me, Pair pair) {
+        for (Crew crew : crewList) {
+            if (crew.equals(me))
+                continue;
+
+            return !pair.getCrewList().contains(crew);
+        }
+
+        return true;
+    }
 }

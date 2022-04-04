@@ -11,14 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 public class CrewReader {
+    private final static CrewReader crewReader = new CrewReader();
+
     private final Map<Course, List<String>> crewData = new HashMap<>();
 
     private final static String FRONTEND_FILE = "/frontend-crew.md";
     private final static String BACKEND_FILE = "/backend-crew.md";
 
-    public CrewReader() {
+    private CrewReader() {
         crewData.put(Course.BACKEND, getBackEndCrewList());
         crewData.put(Course.FRONTEND, getFrontEndCrewList());
+    }
+
+    public static CrewReader getInstance() {
+        return crewReader;
     }
 
     public List<String> getCrewList(Course course) {

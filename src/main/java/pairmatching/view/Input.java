@@ -38,7 +38,7 @@ public class Input {
         parseLevel(texts[1].trim());
         parseMission(texts[2].trim());
 
-        this.courseLevel = new CourseLevel(course, level);
+        this.courseLevel = new CourseLevel(course, level, mission);
     }
 
     public static Input fromText(String text) {
@@ -53,15 +53,5 @@ public class Input {
 
     public CourseLevel getCourseLevel() {
         return courseLevel;
-    }
-
-    @Override
-    public String toString() {
-        return "PairInfo{" +
-                "course=" + course +
-                ", level=" + level +
-                ", mission='" + mission + '\'' +
-                ", courseLevel=" + courseLevel +
-                '}';
     }
 }

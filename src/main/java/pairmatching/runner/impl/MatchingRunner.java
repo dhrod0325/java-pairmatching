@@ -1,5 +1,6 @@
 package pairmatching.runner.impl;
 
+import camp.nextstep.edu.missionutils.Randoms;
 import pairmatching.ApplicationContext;
 import pairmatching.model.Crew;
 import pairmatching.model.Pair;
@@ -10,17 +11,19 @@ import pairmatching.view.Input;
 import pairmatching.view.InputView;
 import pairmatching.view.OutputView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MatchingRunner implements Runner {
     private final PairRepository pairRepository = ApplicationContext.getRepository();
+    private Input input;
 
     @Override
     public void run() {
         String pairInput = InputView.inputPairInfo();
-        Input pairInfo = Input.fromText(pairInput);
+        this.input = Input.fromText(pairInput);
 
-        if (isAlreadyPair(pairInfo)) {
+        if (isAlreadyPair()) {
             String reply = InputView.inputReMatching();
 
             if (!"네".equalsIgnoreCase(reply)) {
@@ -28,33 +31,76 @@ public class MatchingRunner implements Runner {
             }
         }
 
-        matching(pairInfo);
+        matching(3);
+    }
 
-        List<Pair> pairList = pairRepository.findList(pairInfo.getCourseLevel());
+    private boolean matching(int maxApplyCount) {
+        if (maxApplyCount <= 0)
+            return matchFail();
+
+        List<String> shuffledCrewList = getShuffledCrewList();
+        List<Pair> pairList = new ArrayList<>();
+
+        int listSize = shuffledCrewList.size();
+
+        for (int i = 0; i < listSize; i += 2) {
+            if (i + 2 > listSize) break;
+
+            Pair pair = createPair(shuffledCrewList, i);
+
+            if (isRequireRematchingPair(pair))
+                return matching(--maxApplyCount);
+
+            pairList.add(pair);
+        }
+
+        return matchSuccess(pairList);
+    }
+
+    private boolean matchSuccess(List<Pair> pairList) {
+        pairRepository.addPairList(input.getCourseLevel(), pairList);
         OutputView.printPairResult(pairList);
+        return true;
     }
 
-    private boolean isAlreadyPair(Input pairInfo) {
-        List<Pair> pairList = pairRepository.findList(pairInfo.getCourseLevel());
-        return !pairList.isEmpty();
+    private boolean matchFail() {
+        System.out.println("재매칭 횟수 초과로 실패");
+        return false;
     }
 
-    private void matching(Input pairInfo) {
-        List<String> crewList = new CrewReader().getCrewList(pairInfo.getCourse());
+    private Pair createPair(List<String> crewList, int index) {
         int crewListSize = crewList.size();
 
         boolean isOdd = crewListSize % 2 != 0;
 
-        for (int i = 0; i < crewListSize; i += 2) {
-            if (i + 2 > crewListSize) break;
+        Pair pair = new Pair(new Crew(crewList.get(index)), new Crew(crewList.get(index + 1)));
 
-            Pair pair = new Pair(new Crew(crewList.get(i)), new Crew(crewList.get(i + 1)));
-
-            if (isOdd && i == crewListSize - 3) {
-                pair.addCrew(new Crew(crewList.get(i + 2)));
-            }
-
-            pairRepository.addPair(pairInfo.getCourseLevel(), pair);
+        if (isOdd && index == crewListSize - 3) {
+            pair.addCrew(new Crew(crewList.get(index + 2)));
         }
+
+        return pair;
+    }
+
+    private List<Pair> getPairList() {
+        return pairRepository.findList(input.getCourseLevel());
+    }
+
+    private boolean isAlreadyPair() {
+        return !getPairList().isEmpty();
+    }
+
+    private List<String> getShuffledCrewList() {
+        List<String> readCrewList = CrewReader.getInstance().getCrewList(input.getCourse());
+        return Randoms.shuffle(readCrewList);
+    }
+
+    private boolean isRequireRematchingPair(Pair pair) {
+        for (Crew crew : pair.getCrewList()) {
+            Pair existPair = pairRepository.findPairByCrew(input.getCourseLevel(), crew);
+            return (existPair != null && !existPair.isMatchAble(crew, pair));
+        }
+
+        return false;
     }
 }
