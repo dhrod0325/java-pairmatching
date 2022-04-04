@@ -17,7 +17,7 @@ public class Dispatcher {
             try {
                 String inputMenu = InputView.inputMenu();
 
-                Menu menu = Menu.valueOf(inputMenu);
+                Menu menu = Menu.fromString(inputMenu);
 
                 validateMenu(inputMenu);
 
@@ -33,7 +33,7 @@ public class Dispatcher {
     }
 
     private void validateMenu(String inputMenu) {
-        if (!Menu.list().contains(inputMenu))
+        if (!Menu.list().contains(inputMenu.toUpperCase()))
             throw new PairException(ERROR_NOT_EXIST_MENU);
     }
 
