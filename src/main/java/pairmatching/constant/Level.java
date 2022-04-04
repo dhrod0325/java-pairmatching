@@ -1,5 +1,8 @@
 package pairmatching.constant;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum Level {
     LEVEL1("레벨1"),
     LEVEL2("레벨2"),
@@ -24,5 +27,9 @@ public enum Level {
             }
         }
         return null;
+    }
+
+    public static List<Level> list() {
+        return Arrays.asList(Level.LEVEL1, Level.LEVEL2, Level.LEVEL3, Level.LEVEL4, Level.LEVEL5);
     }
 }

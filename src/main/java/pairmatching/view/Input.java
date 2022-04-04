@@ -1,12 +1,13 @@
-package pairmatching.model;
+package pairmatching.view;
 
 import pairmatching.constant.Course;
+import pairmatching.constant.CourseLevel;
 import pairmatching.constant.Level;
 import pairmatching.constant.Mission;
 
 import java.util.List;
 
-public class PairInfo {
+public class Input {
     private Course course;
     private Level level;
     private String mission;
@@ -20,7 +21,7 @@ public class PairInfo {
         this.level = Level.fromString(level);
     }
 
-    private void parseMission(String mission) throws IllegalArgumentException {
+    private void parseMission(String mission) {
         List<String> missions = Mission.getMissionsByLevel(level);
 
         if (!missions.contains(mission)) {
@@ -30,7 +31,7 @@ public class PairInfo {
         this.mission = mission;
     }
 
-    public void parseFromText(String text) throws IllegalArgumentException {
+    public void parse(String text) {
         String[] texts = text.split(",");
 
         parseCourse(texts[0].trim());
@@ -40,19 +41,18 @@ public class PairInfo {
         this.courseLevel = new CourseLevel(course, level);
     }
 
+    public static Input fromText(String text) {
+        Input pairInfo = new Input();
+        pairInfo.parse(text);
+        return pairInfo;
+    }
+
     public Course getCourse() {
         return course;
     }
 
     public CourseLevel getCourseLevel() {
         return courseLevel;
-    }
-
-    public void clear() {
-        this.course = null;
-        this.level = null;
-        this.mission = null;
-        this.courseLevel = null;
     }
 
     @Override

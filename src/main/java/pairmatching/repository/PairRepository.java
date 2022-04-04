@@ -1,6 +1,6 @@
 package pairmatching.repository;
 
-import pairmatching.model.CourseLevel;
+import pairmatching.constant.CourseLevel;
 import pairmatching.model.Crew;
 import pairmatching.model.Pair;
 
@@ -11,7 +11,7 @@ public interface PairRepository {
 
     Pair findPairByCrew(CourseLevel courseLevel, Crew crew);
 
-    List<Pair> findPairListByCourseLevel(CourseLevel courseLevel);
+    List<Pair> findList(CourseLevel courseLevel);
 
     void clear();
 }

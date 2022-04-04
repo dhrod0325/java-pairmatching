@@ -1,5 +1,8 @@
 package pairmatching.constant;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum Course {
     BACKEND("백엔드"),
     FRONTEND("프론트엔드");
@@ -21,5 +24,9 @@ public enum Course {
             }
         }
         return null;
+    }
+
+    public static List<Course> list() {
+        return Arrays.asList(Course.BACKEND, Course.FRONTEND);
     }
 }

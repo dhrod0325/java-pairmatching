@@ -3,45 +3,44 @@ package pairmatching.runner.impl;
 import pairmatching.ApplicationContext;
 import pairmatching.model.Crew;
 import pairmatching.model.Pair;
+import pairmatching.reader.CrewReader;
+import pairmatching.repository.PairRepository;
 import pairmatching.runner.Runner;
-import pairmatching.service.PairService;
+import pairmatching.view.Input;
 import pairmatching.view.InputView;
+import pairmatching.view.OutputView;
 
 import java.util.List;
 
 public class MatchingRunner implements Runner {
-    private final PairService pairService = ApplicationContext.getPairService();
+    private final PairRepository pairRepository = ApplicationContext.getRepository();
 
     @Override
     public void run() {
-        try {
-            pairService.setUpPairInfo();
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        String pairInput = InputView.inputPairInfo();
+        Input pairInfo = Input.fromText(pairInput);
 
-        if (isStopMatching()) return;
-
-        matching();
-
-        pairService.printMatching();
-    }
-
-    private boolean isStopMatching() {
-        List<Pair> pairList = pairService.getPairList();
-
-        if (!pairList.isEmpty()) {
+        if (isAlreadyPair(pairInfo)) {
             String reply = InputView.inputReMatching();
 
-            return !"네".equalsIgnoreCase(reply);
+            if (!"네".equalsIgnoreCase(reply)) {
+                return;
+            }
         }
 
-        return false;
+        matching(pairInfo);
+
+        List<Pair> pairList = pairRepository.findList(pairInfo.getCourseLevel());
+        OutputView.printPairResult(pairList);
     }
 
-    private void matching() {
-        List<String> crewList = pairService.getCrewNames();
+    private boolean isAlreadyPair(Input pairInfo) {
+        List<Pair> pairList = pairRepository.findList(pairInfo.getCourseLevel());
+        return !pairList.isEmpty();
+    }
+
+    private void matching(Input pairInfo) {
+        List<String> crewList = new CrewReader().getCrewList(pairInfo.getCourse());
         int crewListSize = crewList.size();
 
         boolean isOdd = crewListSize % 2 != 0;
@@ -55,7 +54,7 @@ public class MatchingRunner implements Runner {
                 pair.addCrew(new Crew(crewList.get(i + 2)));
             }
 
-            pairService.addPair(pair);
+            pairRepository.addPair(pairInfo.getCourseLevel(), pair);
         }
     }
 }

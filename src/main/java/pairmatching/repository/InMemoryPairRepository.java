@@ -1,6 +1,6 @@
 package pairmatching.repository;
 
-import pairmatching.model.CourseLevel;
+import pairmatching.constant.CourseLevel;
 import pairmatching.model.Crew;
 import pairmatching.model.Pair;
 
@@ -15,14 +15,14 @@ public class InMemoryPairRepository implements PairRepository {
 
     @Override
     public void addPair(CourseLevel courseLevel, Pair pair) {
-        List<Pair> pairList = findPairListByCourseLevel(courseLevel);
+        List<Pair> pairList = findList(courseLevel);
         pairList.add(pair);
         pairData.put(courseLevel, pairList);
     }
 
     @Override
     public Pair findPairByCrew(CourseLevel courseLevel, Crew crew) {
-        List<Pair> pairList = findPairListByCourseLevel(courseLevel);
+        List<Pair> pairList = findList(courseLevel);
         List<Pair> filteredList = pairList.stream()
                 .filter(pair -> pair.getCrewList().contains(crew))
                 .collect(Collectors.toList());
@@ -33,7 +33,7 @@ public class InMemoryPairRepository implements PairRepository {
     }
 
     @Override
-    public List<Pair> findPairListByCourseLevel(CourseLevel courseLevel) {
+    public List<Pair> findList(CourseLevel courseLevel) {
         return pairData.getOrDefault(courseLevel, new ArrayList<>());
     }
 

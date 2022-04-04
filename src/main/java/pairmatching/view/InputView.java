@@ -5,7 +5,7 @@ import pairmatching.constant.Course;
 import pairmatching.constant.Level;
 import pairmatching.constant.Mission;
 
-import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class InputView {
     public static String inputMenu() {
@@ -22,10 +22,10 @@ public class InputView {
     public static String inputPairInfo() {
         StringBuilder sb = new StringBuilder();
         sb.append("#########################################\n");
-        sb.append("과정 : ").append(Course.BACKEND.getName()).append(" | ").append(Course.FRONTEND.getName()).append("\n");
+        sb.append("과정 : ").append(getCourses()).append("\n");
         sb.append("미션 : \n");
 
-        Arrays.asList(Level.LEVEL1, Level.LEVEL2, Level.LEVEL3, Level.LEVEL4, Level.LEVEL5).forEach(level -> {
+        Level.list().forEach(level -> {
             sb.append("- ").append(level.getName()).append(" : ");
             sb.append(String.join(" | ", Mission.getMissionsByLevel(level))).append("\n");
         });
@@ -41,5 +41,11 @@ public class InputView {
     public static String inputReMatching() {
         System.out.println("매칭 정보가 있습니다. 다시 매칭하시겠습니까?");
         return Console.readLine();
+    }
+
+    private static String getCourses() {
+        return Course.list().stream()
+                .map(Course::getName)
+                .collect(Collectors.joining(" | "));
     }
 }

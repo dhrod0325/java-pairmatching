@@ -1,7 +1,4 @@
-package pairmatching.model;
-
-import pairmatching.constant.Course;
-import pairmatching.constant.Level;
+package pairmatching.constant;
 
 import java.util.Objects;
 

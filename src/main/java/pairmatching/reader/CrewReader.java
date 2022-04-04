@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class CrewReader {
     private final Map<Course, List<String>> crewData = new HashMap<>();
-    
+
     private final static String FRONTEND_FILE = "/frontend-crew.md";
     private final static String BACKEND_FILE = "/backend-crew.md";
 
@@ -21,7 +21,7 @@ public class CrewReader {
         crewData.put(Course.FRONTEND, getFrontEndCrewList());
     }
 
-    public List<String> getCrewListByCourse(Course course) {
+    public List<String> getCrewList(Course course) {
         return crewData.get(course);
     }
 
